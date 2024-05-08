@@ -13,7 +13,7 @@ This Go application is designed to extract and format Dota 2 ability data into a
 The application uses existing constants as input data. This was necessary because the required data format was not readily available from the Stratz or OpenDota APIs.
 
 ## Purpose
-The primary purpose of this application is to generate data for the Ability Draft Explorer Application. By providing a structured and consistent data format, it aids in the exploration and understanding of Dota 2 abilities.
+The primary purpose of this application is to generate data for the Ability Draft Explorer Application. The final_hero_abilities.json is used in the ability Draft Explorer for selecting hero ability combo filter.
 
 ## Usage
 To use this application, follow these steps:
@@ -22,4 +22,3 @@ Ensure you have Go installed on your machine.
 Clone this repository.
 Run the application with the command go run main.go.
 Please note that this application requires access to the Dota 2 constants file. Ensure this file is available and correctly formatted for the application to run successfully.
-
