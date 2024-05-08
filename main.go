@@ -23,6 +23,10 @@ func main() {
 	with_name.WithName()
 	os.Exit(1)
 
+	Extract()
+}
+
+func Extract() {
 	abilityIdFile, err := os.ReadFile("ability_ids.json")
 	if err != nil {
 		log.Fatal(err)
