@@ -2,8 +2,14 @@ package with_name
 
 import (
 	"encoding/json"
+	"fmt"
+	"io"
 	"log"
+	"net/http"
 	"os"
+	"strings"
+
+	"github.com/joho/godotenv"
 )
 
 type HeroAbilities struct {
@@ -45,23 +51,54 @@ type MapAbility struct {
 
 func WithName() {
 
-	heroAbilitiesFile, err := os.ReadFile("hero_abilities.json")
+	// Define the GraphQL query
+	query := `{
+		"query": "query { constants { heroes { id displayName abilities { ability { id name } } } } }"
+	}`
+
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	apiToken := os.Getenv("STRATZ_API_TOKEN")
+
+	// Create a request to the GraphQL API
+	req, err := http.NewRequest("POST", "https://api.stratz.com/graphql", strings.NewReader(query))
+	if err != nil {
+		log.Fatal(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("User-Agent", "STRATZ_API")
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", apiToken))
+
+	// Execute the request
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// Decode the response into heroAbilitiesStruct
 	var heroAbilitiesStruct HeroAbilities
-	err = json.Unmarshal(heroAbilitiesFile, &heroAbilitiesStruct)
+	err = json.Unmarshal(bodyBytes, &heroAbilitiesStruct)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	var abilitiesMap map[string]MapAbility
-	abilitiesFile, err := os.ReadFile("abilities.json")
+	resp, err = http.Get("https://api.opendota.com/api/constants/abilities")
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = json.Unmarshal(abilitiesFile, &abilitiesMap)
+	defer resp.Body.Close()
+
+	err = json.NewDecoder(resp.Body).Decode(&abilitiesMap)
 	if err != nil {
 		log.Fatal(err)
 	}

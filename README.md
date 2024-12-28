@@ -20,6 +20,7 @@ To use this application, follow these steps:
 
 Ensure you have Go installed on your machine.
 Clone this repository.
+Place the Stratz API Key inside the .env file.
 Run the application with the command 
 ```go run main.go```
 Please note that this application requires access to the Dota 2 constants file. Ensure this file is available and correctly formatted for the application to run successfully.
